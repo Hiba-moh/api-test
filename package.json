@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "node": "14.4.0",
+  "npm": "6.14.5",
   "scripts": {
     "start": "nodemon server.js",
     "heroku-postbuild": "cd client && npm install && npm run build"
