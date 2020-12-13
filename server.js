@@ -48,8 +48,8 @@ app.get ('/', (req, res) => {
 });
 
 app.get ('/allquestions', async (req, res) => {
-  const allquestions = pool.query ('select question from question');
-  res.json (allquestions);
+  const allquestions = await pool.query ('select question from question');
+  res.json (allquestions.rows);
 });
 
 //SERVER LISTEN
