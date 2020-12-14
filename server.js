@@ -10,7 +10,7 @@ require ('dotenv').config ();
 //because Herohu is responsible for the environment
 //Heroku will provide some variables to apply for our app one of them is PORT .
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const devConfig = {
   user: process.env.PG_USER,
@@ -48,8 +48,30 @@ app.get ('/', (req, res) => {
 });
 
 app.get ('/allquestions', async (req, res) => {
-  const allquestions = await pool.query ('select question from question');
-  res.json (allquestions.rows);
+  try {
+    const allquestions = await pool.query ('select id,question from question');
+    const filter = await pool.query ('select id,module from module');
+    const data = {};
+    data.allquestions = allquestions.rows;
+    data.filter = filter.rows;
+    res.json (data);
+  } catch (err) {
+    console.error (err);
+  }
+});
+
+app.get ('/answered', async (req, res) => {
+  const answered = await pool.query (
+    'select question.id,answer.answer from question inner join answer on question.id = answer.question_id where question.answered>0'
+  );
+  res.json (answered.rows);
+});
+
+app.get ('/unanswered', async (req, res) => {
+  const answered = await pool.query (
+    'select question.id,answer.answer from question inner join answer on question.id = answer.question_id where question.answered===0;'
+  );
+  res.json (answered.rows);
 });
 
 //SERVER LISTEN
